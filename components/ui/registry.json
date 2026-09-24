@@ -1,0 +1,78 @@
+{
+  "button": {
+    "url": "https://coss.com/ui/r/button.json",
+    "files": ["components/ui/button.tsx"]
+  },
+  "spinner": {
+    "url": "https://coss.com/ui/r/spinner.json",
+    "files": ["components/ui/spinner.tsx"]
+  },
+  "input": {
+    "url": "https://coss.com/ui/r/input.json",
+    "files": ["components/ui/input.tsx"]
+  },
+  "textarea": {
+    "url": "https://coss.com/ui/r/textarea.json",
+    "files": ["components/ui/textarea.tsx"]
+  },
+  "select": {
+    "url": "https://coss.com/ui/r/select.json",
+    "files": ["components/ui/select.tsx"]
+  },
+  "switch": {
+    "url": "https://coss.com/ui/r/switch.json",
+    "files": ["components/ui/switch.tsx"]
+  },
+  "tabs": {
+    "url": "https://coss.com/ui/r/tabs.json",
+    "files": ["components/ui/tabs.tsx"]
+  },
+  "segmented-control": {
+    "url": "https://coss.com/ui/r/segmented-control.json",
+    "files": ["lib/segmented-control.ts"]
+  },
+  "table": {
+    "url": "https://coss.com/ui/r/table.json",
+    "files": ["components/ui/table.tsx"]
+  },
+  "dialog": {
+    "url": "https://coss.com/ui/r/dialog.json",
+    "files": ["components/ui/dialog.tsx"]
+  },
+  "scroll-area": {
+    "url": "https://coss.com/ui/r/scroll-area.json",
+    "files": ["components/ui/scroll-area.tsx"]
+  },
+  "sheet": {
+    "url": "https://coss.com/ui/r/sheet.json",
+    "files": ["components/ui/sheet.tsx"]
+  },
+  "badge": {
+    "url": "https://coss.com/ui/r/badge.json",
+    "files": ["components/ui/badge.tsx"]
+  },
+  "separator": {
+    "url": "https://coss.com/ui/r/separator.json",
+    "files": ["components/ui/separator.tsx"]
+  },
+  "alert": {
+    "url": "https://coss.com/ui/r/alert.json",
+    "files": ["components/ui/alert.tsx"]
+  },
+  "toast": {
+    "url": "https://coss.com/ui/r/toast.json",
+    "files": ["components/ui/toast.tsx"]
+  },
+  "label": {
+    "url": "https://coss.com/ui/r/label.json",
+    "files": ["components/ui/label.tsx"]
+  },
+  "colors-neutral": {
+    "url": "https://coss.com/ui/r/colors-neutral.json",
+    "files": []
+  },
+  "menu": {
+    "url": "https://coss.com/ui/r/menu.json",
+    "files": ["components/ui/menu.tsx"]
+  }
+}
