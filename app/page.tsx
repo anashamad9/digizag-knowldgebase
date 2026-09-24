@@ -2,6 +2,7 @@ import { configured, serverDb } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Brain from "@/components/brain";
 import { AccessState } from "@/components/access-state";
+import { avatarUrl } from "@/lib/avatar";
 export const dynamic = "force-dynamic";
 export default async function Page() {
   if (!configured())
@@ -49,6 +50,7 @@ export default async function Page() {
       name={name}
       userId={user.id}
       isOwner={member.role === "owner"}
+      avatarUrl={avatarUrl(user.id, user.user_metadata)}
     />
   );
 }

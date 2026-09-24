@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { context, failure, ApiError, check, sameOrigin } from "@/lib/api";
 import { adminDb } from "@/lib/supabase/server";
+import { avatarUrl } from "@/lib/avatar";
 
 const status = z.enum(["pending", "on_it", "done", "issue"]);
 const priority = z.enum(["low", "medium", "high", "urgent"]);
@@ -50,6 +51,7 @@ export async function GET() {
             account.user_metadata.name ||
             account.email?.split("@")[0] ||
             "User",
+          avatar_url: avatarUrl(account.id, account.user_metadata),
         };
       }),
     );
@@ -59,8 +61,7 @@ export async function GET() {
         "id,title,details,assignee_id,creator_id,priority,deadline,status,created_at,updated_at",
       )
       .eq("workspace_id", workspaceId)
-      .order("deadline", { ascending: true, nullsFirst: false })
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: true });
     check(tasks.error);
     return Response.json({ tasks: tasks.data || [], users });
   } catch (error) {

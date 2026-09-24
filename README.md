@@ -95,7 +95,7 @@ Owner permissions do **not** grant access to other members' private chats or pri
 
 Import this directory/repository into Vercel as a Next.js project, set the environment variables, and use your production domain for `APP_URL` and Supabase's redirect allowlist. Run the Supabase migration and create memberships before opening the live workspace.
 
-`vercel.json` schedules `/api/cron` every five minutes. This schedule requires a Vercel plan that supports frequent cron execution (Pro or above under the documented limits). On Hobby, remove that cron entry and schedule the endpoint externally, or change it to daily and accept slow ingestion. The external scheduler must send `Authorization: Bearer YOUR_CRON_SECRET`. Local `next dev` does not schedule cron jobs; **Sync** remains available.
+`vercel.json` schedules `/api/cron` once daily so it is compatible with Vercel Hobby. Daily background ingestion is intentionally slow; use **Sync** when you need fresh data immediately. An external scheduler can call the endpoint more frequently by sending `Authorization: Bearer YOUR_CRON_SECRET`. Local `next dev` does not schedule cron jobs.
 
 No deployment or user account authorization has been performed. A small synthetic OpenAI file-generation check was performed.
 

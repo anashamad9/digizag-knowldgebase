@@ -32,10 +32,16 @@ import {
 import { Textarea } from "./ui/textarea";
 import { ConfirmDelete } from "./confirm-delete";
 import { toastManager } from "./ui/toast";
+import { Avatar } from "./avatar";
 
 type TaskStatus = "pending" | "on_it" | "done" | "issue";
 type Priority = "low" | "medium" | "high" | "urgent";
-type User = { id: string; name: string; email: string };
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url: string | null;
+};
 type Task = {
   id: string;
   title: string;
@@ -83,6 +89,9 @@ const emptyForm = {
   status: "pending" as TaskStatus,
 };
 
+const oldestFirst = (a: Task, b: Task) =>
+  new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+
 export function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -121,8 +130,11 @@ export function Tasks() {
     () => new Map(users.map((user) => [user.id, user])),
     [users],
   );
-  const visibleTasks =
-    filter === "all" ? tasks : tasks.filter((task) => task.status === filter);
+  const visibleTasks = (
+    filter === "all" ? tasks : tasks.filter((task) => task.status === filter)
+  )
+    .slice()
+    .sort(oldestFirst);
 
   function openEditor(task: Task | "new") {
     setEditing(task);
@@ -160,10 +172,11 @@ export function Tasks() {
         ...form,
         deadline: form.deadline || null,
       });
-      setTasks((current) => [
-        data.task,
-        ...current.filter((task) => task.id !== data.task.id),
-      ]);
+      setTasks((current) =>
+        [...current.filter((task) => task.id !== data.task.id), data.task].sort(
+          oldestFirst,
+        ),
+      );
       setEditing(null);
       notify(editing === "new" ? "Task created." : "Task updated.");
     } catch (error) {
@@ -226,25 +239,27 @@ export function Tasks() {
         </Button>
       </div>
 
-      <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
-        <Button
-          size="sm"
-          variant={filter === "all" ? "secondary" : "outline"}
-          onClick={() => setFilter("all")}
+      <div className="mb-4 w-full sm:w-52">
+        <Label htmlFor="task-status-filter" className="sr-only">
+          Filter by status
+        </Label>
+        <Select
+          value={filter}
+          onValueChange={(value) => setFilter(value as TaskStatus | "all")}
         >
-          All · {tasks.length}
-        </Button>
-        {statuses.map((item) => (
-          <Button
-            key={item.value}
-            size="sm"
-            variant={filter === item.value ? "secondary" : "outline"}
-            onClick={() => setFilter(item.value)}
-          >
-            {item.label} ·{" "}
-            {tasks.filter((task) => task.status === item.value).length}
-          </Button>
-        ))}
+          <SelectTrigger id="task-status-filter" size="sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectPopup>
+            <SelectItem value="all">All statuses · {tasks.length}</SelectItem>
+            {statuses.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label} ·{" "}
+                {tasks.filter((task) => task.status === item.value).length}
+              </SelectItem>
+            ))}
+          </SelectPopup>
+        </Select>
       </div>
 
       {loading ? (
@@ -266,8 +281,8 @@ export function Tasks() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Task</TableHead>
               <TableHead>Assignee</TableHead>
+              <TableHead>Task</TableHead>
               <TableHead>Priority</TableHead>
               <TableHead>Deadline</TableHead>
               <TableHead>Status</TableHead>
@@ -283,6 +298,23 @@ export function Tasks() {
                 : undefined;
               return (
                 <TableRow key={task.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-2.5">
+                      <Avatar
+                        name={assignee?.name || "Unassigned"}
+                        src={assignee?.avatar_url}
+                        size={30}
+                      />
+                      <div className="min-w-0">
+                        <div>{assignee?.name || "Unassigned"}</div>
+                        {assignee?.email && (
+                          <div className="truncate text-xs text-muted-foreground">
+                            {assignee.email}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </TableCell>
                   <TableCell className="max-w-sm">
                     <button
                       className="block w-full text-left"
@@ -295,14 +327,6 @@ export function Tasks() {
                         </span>
                       )}
                     </button>
-                  </TableCell>
-                  <TableCell>
-                    <div>{assignee?.name || "Unassigned"}</div>
-                    {assignee?.email && (
-                      <div className="text-xs text-muted-foreground">
-                        {assignee.email}
-                      </div>
-                    )}
                   </TableCell>
                   <TableCell>
                     <Badge variant={priorityVariant[task.priority]}>

@@ -3,6 +3,7 @@ import { context, failure, ApiError, check, sameOrigin } from "@/lib/api";
 import { adminDb } from "@/lib/supabase/server";
 import { revokeConnection } from "@/lib/composio";
 import { cleanDeletedFiles } from "@/lib/storage-cleanup";
+import { avatarUrl } from "@/lib/avatar";
 async function owner() {
   const c = await context();
   if (c.role !== "owner")
@@ -50,6 +51,7 @@ export async function GET(request: Request) {
           disabled: m.disabled,
           last_login: u.last_sign_in_at,
           created_at: u.created_at,
+          avatar_url: avatarUrl(u.id, u.user_metadata),
         };
       }),
     );
@@ -161,6 +163,8 @@ export async function DELETE(request: Request) {
     const { admin, workspaceId } = await owner();
     const { id } = z.object({ id: z.uuid() }).parse(await request.json());
     await target(id, workspaceId);
+    const account = await admin.auth.admin.getUserById(id);
+    check(account.error);
     // Revoke app access first; retries remain possible through the owner endpoint.
     check(
       (
@@ -223,6 +227,12 @@ export async function DELETE(request: Request) {
       ).error,
     );
     await cleanDeletedFiles(id);
+    const avatarPath = account.data.user?.user_metadata.avatar_path;
+    if (
+      typeof avatarPath === "string" &&
+      avatarPath.startsWith(`${id}/profile/`)
+    )
+      check((await admin.storage.from("knowledge").remove([avatarPath])).error);
     const result = await admin.auth.admin.deleteUser(id);
     if (result.error)
       throw new ApiError(

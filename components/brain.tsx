@@ -19,6 +19,7 @@ export default function Brain(props: {
   name: string;
   userId: string;
   isOwner: boolean;
+  avatarUrl: string | null;
 }) {
   const b = useBrain(props);
   const { fileRef, folderRef } = b;

@@ -23,6 +23,7 @@ import {
 } from "./ui/dialog";
 import { ConfirmDelete } from "./confirm-delete";
 import { toastManager } from "./ui/toast";
+import { Avatar } from "./avatar";
 type User = {
   id: string;
   email: string;
@@ -31,6 +32,7 @@ type User = {
   disabled: boolean;
   last_login?: string;
   created_at: string;
+  avatar_url: string | null;
 };
 export function Users() {
   const [users, setUsers] = useState<User[]>([]);
@@ -112,8 +114,19 @@ export function Users() {
           {users.map((u) => (
             <TableRow key={u.id}>
               <TableCell>
-                <div>{u.name || u.email}</div>
-                <div className="text-xs text-muted-foreground">{u.email}</div>
+                <div className="flex items-center gap-2.5">
+                  <Avatar
+                    name={u.name || u.email}
+                    src={u.avatar_url}
+                    size={30}
+                  />
+                  <div className="min-w-0">
+                    <div>{u.name || u.email}</div>
+                    <div className="truncate text-xs text-muted-foreground">
+                      {u.email}
+                    </div>
+                  </div>
+                </div>
               </TableCell>
               <TableCell>
                 <Badge

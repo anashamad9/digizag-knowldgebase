@@ -4,6 +4,7 @@ import { Spinner } from "./ui/spinner";
 import { Icon } from "./icon";
 import { nav } from "@/lib/view";
 import type { BrainState } from "@/hooks/use-brain";
+import { Avatar } from "./avatar";
 export function Sidebar({
   brain: b,
   compact = false,
@@ -127,6 +128,7 @@ export function Sidebar({
       <div
         className={`mt-auto flex gap-1 ${compact ? "flex-col items-center gap-2" : "items-center"}`}
       >
+        <Avatar name={b.name} src={b.avatarUrl} size={28} />
         {!compact && (
           <span
             className="min-w-0 flex-1 truncate px-2 text-xs"

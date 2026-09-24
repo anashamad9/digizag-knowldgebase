@@ -31,11 +31,13 @@ export function useBrain({
   name,
   userId,
   isOwner,
+  avatarUrl: initialAvatarUrl,
 }: {
   email: string;
   name: string;
   userId: string;
   isOwner: boolean;
+  avatarUrl: string | null;
 }) {
   const router = useRouter();
   const [pendingDelete, setPendingDelete] = useState<{
@@ -51,6 +53,7 @@ export function useBrain({
   const [signingOut, setSigningOut] = useState(false);
   const [mobile, setMobile] = useState(false);
   const [dark, setDark] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
   const [input, setInput] = useState("");
   const [remember, setRemember] = useState(false);
   const [learn, setLearn] = useState(true);
@@ -443,7 +446,9 @@ export function useBrain({
       });
       if (pendingDelete.kind === "chat") {
         const deletedId = pendingDelete.id;
-        setConversations((items) => items.filter((item) => item.id !== deletedId));
+        setConversations((items) =>
+          items.filter((item) => item.id !== deletedId),
+        );
         setMemories((items) =>
           items.filter((item) => item.metadata.conversation_id !== deletedId),
         );
@@ -477,6 +482,8 @@ export function useBrain({
     memoryBusy,
     signingOut,
     email,
+    avatarUrl,
+    setAvatarUrl,
     page,
     mobile,
     setMobile,
